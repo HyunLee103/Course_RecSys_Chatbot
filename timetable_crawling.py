@@ -11,8 +11,8 @@ add = 'https://everytime.kr/timetable/2021/1'
 driver.get(add)
 
 #로그인
-driver.find_element_by_css_selector('#container > form > p:nth-child(1) > input').send_keys('chdnjf103')
-driver.find_element_by_css_selector('#container > form > p:nth-child(2) > input').send_keys('a478956')
+driver.find_element_by_css_selector('#container > form > p:nth-child(1) > input').send_keys('ID')
+driver.find_element_by_css_selector('#container > form > p:nth-child(2) > input').send_keys('PW')
 driver.find_element_by_css_selector('#container > form > p.submit > input').click()
 
 time.sleep(3)
