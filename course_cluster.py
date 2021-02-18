@@ -9,7 +9,7 @@ from sklearn.cluster import KMeans
 # load data
 table = pd.read_csv('data/심교.csv',header=None)
 unique_course = list(set(table.iloc[:,1].tolist()))
-
+len(unique_course)
 
 # load FastText pretrained model
 ko_model = models.fasttext.load_facebook_model('path/cc.ko.300.bin.gz')
@@ -17,9 +17,9 @@ ko_model = models.fasttext.load_facebook_model('path/cc.ko.300.bin.gz')
 
 # tokenizing
 token = tokenizing(unique_course)
-token[114] = ['기술','소통']
+token[4] = ['기술','소통']
 token[130] = ['문화']
-
+token
 
 # Vectorizing
 add_feature = mk_cluster_feature(token)
