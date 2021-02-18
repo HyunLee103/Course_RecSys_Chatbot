@@ -90,7 +90,6 @@ export function sendMessage(chatInfo: object) {
     try {
       const response = await chatbot.post('message.do', chatInfo);
       const responseData = response.data.responseSet.result;
-      console.log(responseData);
       return dispatch(sendMessageSuccessful(responseData));
     } catch (error) {
       return dispatch(sendMessageFailed(error));

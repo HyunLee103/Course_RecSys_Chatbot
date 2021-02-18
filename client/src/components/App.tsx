@@ -24,13 +24,15 @@ const App: React.FC = () => {
         className="App-header"
         style={{ textAlign: 'center', backgroundColor: 'inherit' }}
       >
-        <Typography.Title level={2}>교양 뭐 듣지?</Typography.Title>
+        <Typography.Title style={{ marginTop: '20px' }} level={2}>
+          교양 뭐 듣지?
+        </Typography.Title>
       </Layout.Header>
-      <Layout.Content style={{ margin: '3% 0' }}>
+      <Layout.Content style={{ margin: '0', overflow: 'scroll' }}>
         <Row>
           <Col md={desktopWidth} sm={mobileWidth} xs={mobileWidth}>
-            {messages.map(({ me, message }) => (
-              <ChatDialog me={me} text={message} />
+            {messages.map(({ me, message, carouselList }) => (
+              <ChatDialog me={me} text={message} selection={carouselList} />
             ))}
           </Col>
         </Row>
