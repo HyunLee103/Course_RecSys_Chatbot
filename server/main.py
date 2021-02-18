@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 
 # health check
-@app.route('/health', methods=['POST'])
+@app.route('/health', methods=['GET'])
 def health_check():
 	return {"status": "healthy"}
 
