@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Layout, Row, Col, Typography } from 'antd';
-import Timetable from './Timetable';
+import TimetableDisplay from './TimetableDisplay';
 import ChatDialog from './ChatDialog';
 import { useDispatch, useSelector } from 'react-redux';
 import { startApp } from '../actions/actions';
@@ -43,7 +43,7 @@ const App: React.FC = () => {
         </Row>
         <Row>
           <Col md={desktopWidth} sm={mobileWidth} xs={mobileWidth}>
-            <Timetable />
+            <TimetableDisplay />
           </Col>
         </Row>
       </Layout.Content>
