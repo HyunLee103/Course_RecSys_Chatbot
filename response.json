@@ -1,0 +1,70 @@
+{
+  "responseSet": {
+    "code": "success",
+    "result": {
+      "version": "v2.0",
+      "chatbot_id": "cae73c2e-bdb4-49e6-bf22-4137eade4c19",
+      "user_id": "0",
+      "input_sentence": "",
+      "ins_id": "",
+      "intent_id": "",
+      "ref_intent_id": "326d5e1b-6192-49c2-814e-60f2c3ab3fdd",
+      "chatflow_id": "",
+      "node_id": "",
+      "param_id": "",
+      "another_result": [],
+      "result": [
+        {
+          "nodeType": "speak",
+          "timestamp": 1613631282776,
+          "message": "안녕! 난 건국대학교의 모든 교양 강의에 대해 꿰고 있는 교양 고인물, 교양추천선배봇이야! \n\n몇가지 질문을 할 텐데 편하게 답해주면 너한테 딱 맞는 교양 강의를 골라 시간표를 짜줄게 :)\n\n우선 이번 학기 몇 학점 들을 건지 말해줘~",
+          "imgRoute": "",
+          "optionList": [],
+          "carouselList": [],
+          "quickList": [],
+          "actionData": "",
+          "msgBlocked": ""
+        }
+      ],
+      "debugging_result": [],
+      "parameters": {
+        "@chatbotName": "교양추천봇",
+        "@currentDateYYYY": "2021",
+        "@channelId": "0",
+        "@currentDateDD": "18",
+        "@currentDateMM": "02",
+        "@currentTimeMI": "54",
+        "@currentTimeHH": "15",
+        "@currentTimeSS": "42",
+        "@sessionId": "22413767",
+        "@currentDateYYYYMMDD": "20210218",
+        "@message": "",
+        "@currentDateYYYYMM": "202102",
+        "@currentDateWeek": "5",
+        "@userId": "0"
+      },
+      "emotions": {},
+      "session_id": 22413767,
+      "log_id": 211944445,
+      "debugCode": "",
+      "debugMsg": "",
+      "evaluate_setting": "Y",
+      "greetingYn": "Y",
+      "resultStatus": {
+        "resultCmt": "",
+        "resultCode": "200",
+        "resultMsg": "success"
+      },
+      "personalityObj": {
+        "intentId": "",
+        "nodeMessage": "",
+        "isChatflow": "",
+        "answerData": ""
+      },
+      "pauseFlowInsList": [],
+      "extension": {},
+      "channel_id": "0",
+      "flow_type": ""
+    }
+  }
+}
