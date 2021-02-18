@@ -2,30 +2,46 @@ import React from 'react';
 import styled from 'styled-components';
 import { Card } from 'antd';
 
+interface ChatDialogStyleProps {
+  me: boolean;
+}
+
+interface ChatDialogProps {
+  me: boolean;
+  text: string;
+}
+
 const ChatDialogWrapper = styled.div`
   margin: 10px 0;
 `;
 
-// TODO props 로 선택하면됨
-const ChatDialogContainer = styled.div`
+const ChatDialogContainer = styled.div<ChatDialogStyleProps>`
   display: flex;
-  justify-content: flex-end;
+  justify-content: ${props => (props.me ? 'flex-end' : 'flex-start')};
 `;
 
-// TODO 마진 주기
-const ChatDialog = () => (
+const Textbox = styled(Card)<ChatDialogStyleProps>`
+  width: 80%;
+  background-color: ${props => (props.me ? '#177ddc' : '#ffffff')};
+  border: 1px solid;
+  border-color: ${props => (props.me ? '#177ddc' : '#ffffff')};
+  border-radius: 8px;
+  text-align: ${props => (props.me ? 'right' : 'left')};
+`;
+
+const Text = styled.p<ChatDialogStyleProps>`
+  margin: 0;
+  color: ${({ me }) => (me ? '#ffffff' : '#000000')};
+`;
+
+const ChatDialog = ({ me, text }: ChatDialogProps) => (
   <ChatDialogWrapper>
-    <ChatDialogContainer>
-      <Card
-        size="small"
-        style={{
-          width: '80%',
-          border: '1px solid black',
-          borderRadius: '8px',
-        }}
-      >
-        <p style={{ margin: 0 }}>Card content</p>
-      </Card>
+    <ChatDialogContainer me={me}>
+      <Textbox me={me} size="small">
+        <Text me={me} style={{ margin: 0 }}>
+          {text}
+        </Text>
+      </Textbox>
     </ChatDialogContainer>
   </ChatDialogWrapper>
 );
