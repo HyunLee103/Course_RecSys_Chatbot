@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import { createGlobalStyle } from 'styled-components';
 import 'antd/dist/antd.css';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
+import store from './stores';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -21,10 +23,12 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 ReactDOM.render(
-  <React.StrictMode>
-    <GlobalStyle />
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <React.StrictMode>
+      <GlobalStyle />
+      <App />
+    </React.StrictMode>
+  </Provider>,
   document.getElementById('root')
 );
 
