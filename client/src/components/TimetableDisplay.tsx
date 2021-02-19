@@ -1,8 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 interface TimetableStyleProps {
   indicator?: boolean;
+  background?: string;
+}
+
+interface TimetableDateTime {
+  date: string;
+  start: number;
+  end: number;
+}
+
+interface TimetableData {
+  color: string;
+  classname: string;
+  datetime: TimetableDateTime[];
+}
+
+interface TimetableProps {
+  data: TimetableData[];
+}
+
+interface TimetableState {
+  colors: { [datetime: string]: string };
+  classes: { [datetime: string]: string };
 }
 
 const TimetableWrapper = styled.div`
@@ -20,12 +42,13 @@ const TimeContainer = styled.div<TimetableStyleProps>`
   justify-content: stretch;
   text-align: ${props => (props.indicator ? 'center' : 'left')};
 `;
-
 const DateContainer = styled.div<TimetableStyleProps>`
   margin: 0;
   width: ${props => (props.indicator ? '5%' : '19%')};
   border: 1px solid #bfbfbf;
   text-align: ${props => (props.indicator ? 'center' : 'left')};
+  background-color: ${props =>
+    props.background ? props.background : '#ffffff'};
 `;
 
 const TimetableText = styled.p`
@@ -33,26 +56,44 @@ const TimetableText = styled.p`
   font-weight: 300;
 `;
 
-const TimetableDisplay: React.FC = () => {
+const TimetableDisplay = ({ data }: TimetableProps) => {
+  const state: TimetableState = {
+    colors: {},
+    classes: {},
+  };
+
+  data.forEach(datum => {
+    const { color, classname, datetime } = datum;
+    datetime.forEach(({ date, start, end }) => {
+      state.classes[`${date}-${start}`] = classname;
+      for (let i = start; i < end; i++) {
+        state.colors[`${date}-${i}`] = color;
+      }
+    });
+  });
+
+  console.log(data);
+  console.log(state);
+
   return (
     <TimetableWrapper>
       <TimeContainer indicator id="week-indicator">
         <DateContainer indicator id="indicator-blank">
           <TimetableText></TimetableText>
         </DateContainer>
-        <DateContainer id="mon-indicator">
+        <DateContainer id="MON-indicator">
           <TimetableText>월요일</TimetableText>
         </DateContainer>
-        <DateContainer id="tue-indicator">
+        <DateContainer id="TUE-indicator">
           <TimetableText>화요일</TimetableText>
         </DateContainer>
-        <DateContainer id="wed-indicator">
+        <DateContainer id="WED-indicator">
           <TimetableText>수요일</TimetableText>
         </DateContainer>
-        <DateContainer id="thu-indicator">
+        <DateContainer id="THU-indicator">
           <TimetableText>목요일</TimetableText>
         </DateContainer>
-        <DateContainer id="fri-indicator">
+        <DateContainer id="FRI-indicator">
           <TimetableText>금요일</TimetableText>
         </DateContainer>
       </TimeContainer>
@@ -60,200 +101,240 @@ const TimetableDisplay: React.FC = () => {
         <DateContainer indicator id="indicator-09">
           <TimetableText>09</TimetableText>
         </DateContainer>
-        <DateContainer id="mon-09">
-          <TimetableText>월요일 9시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['MON-09']} id="MON-09">
+          <TimetableText>
+            {`${state.classes['MON-09'] ? state.classes['MON-09'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="tue-09">
-          <TimetableText>화요일 9시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['TUE-09']} id="TUE-09">
+          <TimetableText>
+            {`${state.classes['TUE-09'] ? state.classes['TUE-09'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="wed-09">
-          <TimetableText>수요일 9시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['WED-09']} id="WED-09">
+          <TimetableText>
+            {`${state.classes['WED-09'] ? state.classes['WED-09'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="thu-09">
-          <TimetableText>목요일 9시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['THU-09']} id="THU-09">
+          <TimetableText>
+            {`${state.classes['THU-09'] ? state.classes['THU-09'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="fri-09">
-          <TimetableText>금요일 9시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['FRI-09']} id="FRI-09">
+          <TimetableText>
+            {`${state.classes['FRI-09'] ? state.classes['FRI-09'] : ''}`}
+          </TimetableText>
         </DateContainer>
       </TimeContainer>
       <TimeContainer id="week-10">
         <DateContainer indicator id="indicator-10">
           <TimetableText>10</TimetableText>
         </DateContainer>
-        <DateContainer id="mon-10">
-          <TimetableText>월요일 10시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['MON-10']} id="MON-10">
+          <TimetableText>
+            {`${state.classes['MON-10'] ? state.classes['MON-10'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="tue-10">
-          <TimetableText>화요일 10시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['TUE-10']} id="TUE-10">
+          <TimetableText>
+            {`${state.classes['TUE-10'] ? state.classes['TUE-10'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="wed-10">
-          <TimetableText>수요일 10시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['WED-10']} id="WED-10">
+          <TimetableText>
+            {`${state.classes['WED-10'] ? state.classes['WED-10'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="thu-10">
-          <TimetableText>목요일 10시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['THU-10']} id="THU-10">
+          <TimetableText>
+            {`${state.classes['THU-10'] ? state.classes['THU-10'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="fri-10">
-          <TimetableText>금요일 10시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['FRI-10']} id="FRI-10">
+          <TimetableText>
+            {`${state.classes['FRI-10'] ? state.classes['FRI-10'] : ''}`}
+          </TimetableText>
         </DateContainer>
       </TimeContainer>
       <TimeContainer id="week-11">
         <DateContainer indicator id="indicator-11">
           <TimetableText>11</TimetableText>
         </DateContainer>
-        <DateContainer id="mon-11">
-          <TimetableText>월요일 11시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['MON-11']} id="MON-11">
+          <TimetableText>
+            {`${state.classes['MON-11'] ? state.classes['MON-11'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="tue-11">
-          <TimetableText>화요일 11시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['TUE-11']} id="TUE-11">
+          <TimetableText>
+            {`${state.classes['TUE-11'] ? state.classes['TUE-11'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="wed-11">
-          <TimetableText>수요일 11시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['WED-11']} id="WED-11">
+          <TimetableText>
+            {`${state.classes['WED-11'] ? state.classes['WED-11'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="thu-11">
-          <TimetableText>목요일 11시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['THU-11']} id="THU-11">
+          <TimetableText>
+            {`${state.classes['THU-11'] ? state.classes['THU-11'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="fri-11">
-          <TimetableText>금요일 11시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['FRI-11']} id="FRI-11">
+          <TimetableText>
+            {`${state.classes['FRI-11'] ? state.classes['FRI-11'] : ''}`}
+          </TimetableText>
         </DateContainer>
       </TimeContainer>
       <TimeContainer id="week-12">
         <DateContainer indicator id="indicator-12">
           <TimetableText>12</TimetableText>
         </DateContainer>
-        <DateContainer id="mon-12">
-          <TimetableText>월요일 12시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['MON-12']} id="MON-12">
+          <TimetableText>
+            {`${state.classes['MON-12'] ? state.classes['MON-12'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="tue-12">
-          <TimetableText>화요일 12시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['TUE-12']} id="TUE-12">
+          <TimetableText>
+            {`${state.classes['TUE-12'] ? state.classes['TUE-12'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="wed-12">
-          <TimetableText>수요일 12시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['WED-12']} id="WED-12">
+          <TimetableText>
+            {`${state.classes['WED-12'] ? state.classes['WED-12'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="thu-12">
-          <TimetableText>목요일 12시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['THU-12']} id="THU-12">
+          <TimetableText>
+            {`${state.classes['THU-12'] ? state.classes['THU-12'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="fri-12">
-          <TimetableText>금요일 12시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['FRI-12']} id="FRI-12">
+          <TimetableText>
+            {`${state.classes['FRI-12'] ? state.classes['FRI-12'] : ''}`}
+          </TimetableText>
         </DateContainer>
       </TimeContainer>
       <TimeContainer id="week-13">
         <DateContainer indicator id="indicator-13">
           <TimetableText>13</TimetableText>
         </DateContainer>
-        <DateContainer id="mon-13">
-          <TimetableText>월요일 13시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['MON-13']} id="MON-13">
+          <TimetableText>
+            {`${state.classes['MON-13'] ? state.classes['MON-13'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="tue-13">
-          <TimetableText>화요일 13시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['TUE-13']} id="TUE-13">
+          <TimetableText>
+            {`${state.classes['TUE-13'] ? state.classes['TUE-13'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="wed-13">
-          <TimetableText>수요일 13시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['WED-13']} id="WED-13">
+          <TimetableText>
+            {`${state.classes['WED-13'] ? state.classes['WED-13'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="thu-13">
-          <TimetableText>목요일 13시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['THU-13']} id="THU-13">
+          <TimetableText>
+            {`${state.classes['THU-13'] ? state.classes['THU-13'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="fri-13">
-          <TimetableText>금요일 13시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['FRI-13']} id="FRI-13">
+          <TimetableText>
+            {`${state.classes['FRI-13'] ? state.classes['FRI-13'] : ''}`}
+          </TimetableText>
         </DateContainer>
       </TimeContainer>
       <TimeContainer id="week-14">
         <DateContainer indicator id="indicator-14">
           <TimetableText>14</TimetableText>
         </DateContainer>
-        <DateContainer id="mon-14">
-          <TimetableText>월요일 14시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['MON-14']} id="MON-14">
+          <TimetableText>
+            {`${state.classes['MON-14'] ? state.classes['MON-14'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="tue-14">
-          <TimetableText>화요일 14시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['TUE-14']} id="TUE-14">
+          <TimetableText>
+            {`${state.classes['TUE-14'] ? state.classes['TUE-14'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="wed-14">
-          <TimetableText>수요일 14시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['WED-14']} id="WED-14">
+          <TimetableText>
+            {`${state.classes['WED-14'] ? state.classes['WED-14'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="thu-14">
-          <TimetableText>목요일 14시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['THU-14']} id="THU-14">
+          <TimetableText>
+            {`${state.classes['THU-14'] ? state.classes['THU-14'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="fri-14">
-          <TimetableText>금요일 14시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['FRI-14']} id="FRI-14">
+          <TimetableText>
+            {`${state.classes['FRI-14'] ? state.classes['FRI-14'] : ''}`}
+          </TimetableText>
         </DateContainer>
       </TimeContainer>
       <TimeContainer id="week-15">
         <DateContainer indicator id="indicator-15">
           <TimetableText>15</TimetableText>
         </DateContainer>
-        <DateContainer id="mon-15">
-          <TimetableText>월요일 15시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['MON-15']} id="MON-15">
+          <TimetableText>
+            {`${state.classes['MON-15'] ? state.classes['MON-15'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="tue-15">
-          <TimetableText>화요일 15시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['TUE-15']} id="TUE-15">
+          <TimetableText>
+            {`${state.classes['TUE-15'] ? state.classes['TUE-15'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="wed-15">
-          <TimetableText>수요일 15시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['WED-15']} id="WED-15">
+          <TimetableText>
+            {`${state.classes['WED-15'] ? state.classes['WED-15'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="thu-15">
-          <TimetableText>목요일 15시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['THU-15']} id="THU-15">
+          <TimetableText>
+            {`${state.classes['THU-15'] ? state.classes['THU-15'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="fri-15">
-          <TimetableText>금요일 15시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['FRI-15']} id="FRI-15">
+          <TimetableText>
+            {`${state.classes['FRI-15'] ? state.classes['FRI-15'] : ''}`}
+          </TimetableText>
         </DateContainer>
       </TimeContainer>
       <TimeContainer id="week-16">
         <DateContainer indicator id="indicator-16">
           <TimetableText>16</TimetableText>
         </DateContainer>
-        <DateContainer id="mon-16">
-          <TimetableText>월요일 16시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['MON-16']} id="MON-16">
+          <TimetableText>
+            {`${state.classes['MON-16'] ? state.classes['MON-16'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="tue-16">
-          <TimetableText>화요일 16시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['TUE-16']} id="TUE-16">
+          <TimetableText>
+            {`${state.classes['TUE-16'] ? state.classes['TUE-16'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="wed-16">
-          <TimetableText>수요일 16시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['WED-16']} id="WED-16">
+          <TimetableText>
+            {`${state.classes['WED-16'] ? state.classes['WED-16'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="thu-16">
-          <TimetableText>목요일 16시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['THU-16']} id="THU-16">
+          <TimetableText>
+            {`${state.classes['THU-16'] ? state.classes['THU-16'] : ''}`}
+          </TimetableText>
         </DateContainer>
-        <DateContainer id="fri-16">
-          <TimetableText>금요일 16시</TimetableText>
-          <TimetableText>수업</TimetableText>
+        <DateContainer background={state.colors['FRI-16']} id="FRI-16">
+          <TimetableText>
+            {`${state.classes['FRI-16'] ? state.classes['FRI-16'] : ''}`}
+          </TimetableText>
         </DateContainer>
       </TimeContainer>
     </TimetableWrapper>
