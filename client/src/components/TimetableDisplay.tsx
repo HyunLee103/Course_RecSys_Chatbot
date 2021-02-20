@@ -52,8 +52,9 @@ const DateContainer = styled.div<TimetableStyleProps>`
 `;
 
 const TimetableText = styled.p`
-  margin: 0;
-  font-weight: 300;
+  margin: 3px;
+  font-weight: 400;
+  font-size: 9px;
 `;
 
 const TimetableDisplay = ({ data }: TimetableProps) => {
@@ -71,9 +72,6 @@ const TimetableDisplay = ({ data }: TimetableProps) => {
       }
     });
   });
-
-  console.log(data);
-  console.log(state);
 
   return (
     <TimetableWrapper>

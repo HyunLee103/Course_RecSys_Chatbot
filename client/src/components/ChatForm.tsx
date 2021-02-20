@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { sendMessage, writeMessage } from '../actions/actions';
+import { sendMessage, statusChange, writeMessage } from '../actions/actions';
 import { AppState } from '../reducers';
 import styled from 'styled-components';
 
@@ -11,7 +11,7 @@ const ChatInput = styled(Input.Search)`
 `;
 
 const ChatForm: React.FC = () => {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState<string>('');
 
   const dispatch = useDispatch();
   const chatInfo = useSelector(
@@ -27,9 +27,10 @@ const ChatForm: React.FC = () => {
     setValue(event.currentTarget.value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     dispatch(writeMessage(value));
-    dispatch(sendMessage({ ...chatInfo, input_sentence: value }));
+    await dispatch(sendMessage({ ...chatInfo, input_sentence: value }));
+    dispatch(statusChange('START_CONVERSATION'));
     setValue('');
   };
 

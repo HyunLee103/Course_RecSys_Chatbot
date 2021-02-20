@@ -1,18 +1,19 @@
 import React, { useEffect } from 'react';
 import { Layout, Row, Col, Typography } from 'antd';
-import TimetableDisplay from './TimetableDisplay';
-import ChatDialog from './ChatDialog';
 import { useDispatch, useSelector } from 'react-redux';
 import { startApp } from '../actions/actions';
 import { AppState } from '../reducers';
+import ChatDialog from './ChatDialog';
 import ChatForm from './ChatForm';
+import Timetable from './Timetable';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
+  const status = useSelector((state: AppState) => state.status);
   const messages = useSelector((state: AppState) => state.messages);
 
   const desktopWidth = { span: 12, offset: 6 };
-  const mobileWidth = { span: 18, offset: 3 };
+  const mobileWidth = { span: 22, offset: 1 };
 
   useEffect(() => {
     dispatch(startApp());
@@ -36,14 +37,18 @@ const App: React.FC = () => {
             ))}
           </Col>
         </Row>
-        <Row>
+        <Row style={{ display: status === 'HELLO' ? 'flex' : 'none' }}>
           <Col md={desktopWidth} sm={mobileWidth} xs={mobileWidth}>
             <ChatForm />
           </Col>
         </Row>
-        <Row>
+        <Row
+          style={{
+            display: status === 'TIMETABLE_REQUESTED' ? 'flex' : 'none',
+          }}
+        >
           <Col md={desktopWidth} sm={mobileWidth} xs={mobileWidth}>
-            <TimetableDisplay />
+            <Timetable />
           </Col>
         </Row>
       </Layout.Content>
