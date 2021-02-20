@@ -3,9 +3,10 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendMessage, writeMessage } from '../actions/actions';
 import { AppState } from '../reducers';
+import { SelectionOptionList } from './ChatDialog';
 
 interface UserSelectDialogProps {
-  buttons: { value: number; label: string }[];
+  buttons: SelectionOptionList[];
 }
 
 const UserSelectDialog = ({ buttons }: UserSelectDialogProps) => {
@@ -25,9 +26,10 @@ const UserSelectDialog = ({ buttons }: UserSelectDialogProps) => {
   };
 
   return (
-    <React.Fragment>
-      {buttons.map(({ value, label }: any) => (
+    <>
+      {buttons.map(({ value, label }, index) => (
         <Button
+          key={index}
           style={{ margin: '2px' }}
           type="default"
           block
@@ -36,7 +38,7 @@ const UserSelectDialog = ({ buttons }: UserSelectDialogProps) => {
           {label}
         </Button>
       ))}
-    </React.Fragment>
+    </>
   );
 };
 

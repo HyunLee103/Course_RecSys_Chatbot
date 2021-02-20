@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import { FormInstance } from 'antd/lib/form';
+import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 import TimetableDisplay from './TimetableDisplay';
 import TimetableForm from './TimetableForm';
-import { Button } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { Button, Col, Row } from 'antd';
 import { AppState } from '../reducers';
 import { apiRequest } from '../actions/actions';
+import { desktopWidth, mobileWidth } from './Layout';
 
 type Date = 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI';
+
+interface TimetableStyleProps {
+  show: boolean;
+}
 
 interface FormValues {
   classname: string;
@@ -28,6 +34,10 @@ interface TimetableData {
   datetime: TimetableDateTime[];
 }
 
+const TimetableWrapper = styled(Row)<TimetableStyleProps>`
+  display: ${props => (props.show ? 'flex' : 'none')};
+`;
+
 const colors = [
   '#ff4d4f',
   '#fff566',
@@ -40,7 +50,7 @@ const colors = [
   '#8c8c8c',
 ];
 
-const Timetable = () => {
+const Timetable = ({ show }: TimetableStyleProps) => {
   const dispatch = useDispatch();
 
   const [timetableData, setTimetableData] = useState<TimetableData[]>([]);
@@ -84,7 +94,8 @@ const Timetable = () => {
     form.resetFields();
   };
 
-  const handleFinalSubmit = (event: React.MouseEvent) => {
+  const handleFinalSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     const requestBody = {
       ...userPreference,
       date_lst: dateList,
@@ -96,13 +107,15 @@ const Timetable = () => {
   };
 
   return (
-    <div>
-      <TimetableForm handleSubmit={handleSingleSubmit} />
-      <TimetableDisplay data={timetableData} />
-      <Button type="primary" htmlType="button" onClick={handleFinalSubmit}>
-        시간표 최종 전송!
-      </Button>
-    </div>
+    <TimetableWrapper show={show}>
+      <Col md={desktopWidth} sm={mobileWidth} xs={mobileWidth}>
+        <TimetableForm handleSubmit={handleSingleSubmit} />
+        <TimetableDisplay data={timetableData} />
+        <Button type="primary" htmlType="button" onClick={handleFinalSubmit}>
+          시간표 최종 전송!
+        </Button>
+      </Col>
+    </TimetableWrapper>
   );
 };
 

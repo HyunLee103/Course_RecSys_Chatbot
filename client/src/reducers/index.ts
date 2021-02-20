@@ -22,7 +22,7 @@ interface UserPreference {
   section: number[];
 }
 
-interface Message {
+export interface Message {
   me: boolean;
   message: string;
   carouselList: any[];

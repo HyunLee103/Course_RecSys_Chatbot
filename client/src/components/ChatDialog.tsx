@@ -10,11 +10,19 @@ interface ChatDialogStyleProps {
   me: boolean;
 }
 
-// FIXME any 고치기
+export interface SelectionOptionList {
+  label: string;
+  value: number;
+}
+
+interface Selection {
+  optionList: SelectionOptionList[];
+}
+
 interface ChatDialogProps {
   me: boolean;
   text: string;
-  selection?: any[];
+  selection: Selection[];
 }
 
 const ChatDialogWrapper = styled.div`
@@ -63,9 +71,7 @@ const ChatDialog = ({ me, text, selection }: ChatDialogProps) => {
     <ChatDialogWrapper>
       <ChatDialogContainer me={me}>
         <Textbox me={me} size="small">
-          <Text me={me} style={{ margin: 0 }}>
-            {text}
-          </Text>
+          <Text me={me}>{text}</Text>
           <UserSelectDialog buttons={buttons} />
         </Textbox>
       </ChatDialogContainer>
