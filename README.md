@@ -21,11 +21,11 @@
 
 (WIP)
 
-## Usage
+## Usage  
+
+     !git clone https://github.com/HyunLee103/Course_RecSys_Chatbot.git  
 - 강의정보 csv 형태로 저장 후 'data/' 저장
 - pretrained fasttext_model.bin [다운로드](https://fasttext.cc/docs/en/crawl-vectors.html) 후 'ckpt/' 저장
-        
-        !git clone https://github.com/HyunLee103/Course_RecSys_Chatbot.git  
         
 
         !python main.py --course_pth ./data --pretrain_pth ./ckpt 
