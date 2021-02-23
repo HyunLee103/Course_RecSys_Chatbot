@@ -4,6 +4,10 @@ import pandas as pd
 import numpy as np
 from gensim import models
 from sklearn.cluster import KMeans 
+import os
+from sklearn.feature_extraction.text import TfidfVectorizer
+from collections import defaultdict
+import copy
 
 def mk_cluster_feature(token):
     """
@@ -72,7 +76,7 @@ def course_clustering(course_pth, embed_pretrained_pth):
     """
 
     # load data
-    table = pd.read_csv(course_pth,header=None)
+    table = pd.read_csv(os.path.join(course_pth,'심교.csv'),header=None)
     unique_course = list(set(table.iloc[:,1].tolist()))
     len(unique_course)
 
@@ -117,3 +121,83 @@ def course_clustering(course_pth, embed_pretrained_pth):
     res_df = pd.merge(table,cluster_df)
 
     return res_df
+
+
+
+def text_modeling(total):
+    """
+    강의평 토크나이징 후 TF-IDF 상위 200 단어 기준으로
+    긍/부정 단어 TF-IDF score 비율로 text_score 결정
+
+    total: input df
+    return: text_score가 추가된 df
+    """
+    eval_text = total.iloc[:,15:-2]
+    ex_index = eval_text.iloc[:,0].dropna().index
+    ex_text = eval_text.iloc[ex_index,:]
+    ex_text.fillna(0,inplace=True)
+
+    res = []
+    for i in range(95):
+        tem = ''
+        for sen in ex_text.iloc[i,:]:
+            if sen != 0:
+                tem += sen+' '
+        res.append(tem)
+
+    token = tokenizing(res)
+
+    new_token = []
+    for sen in token:
+        new_sen = copy.deepcopy(sen)
+        for w in sen:
+            if len(w)==1 and w != '꿀':
+                new_sen.remove(w)
+        new_token.append(new_sen)
+
+    res = []
+    for sen in new_token:
+        tem_str = ''
+        tem_str = ' '.join(sen)
+        res.append(tem_str)
+
+    vectorizer = TfidfVectorizer(max_features=200,ngram_range=(1,2))
+    sp_matrix = vectorizer.fit_transform(res)
+
+    word2id = defaultdict(lambda : 0)
+    for idx, feature in enumerate(vectorizer.get_feature_names()):
+        word2id[feature] = idx
+
+    for i, sent in enumerate(res):
+        print('====== document[%d] ======' % i)
+        print( [ (token, sp_matrix[i, word2id[token]]) for token in sent.split() ] )
+
+
+    data_array = sp_matrix.toarray()
+    data = pd.DataFrame(data_array, columns=vectorizer.get_feature_names())
+
+    # 긍/부정 키워드
+    data['pos'] = data[['추천', '최고', '집중', '지식', '개꿀', '도움', '쉬움', '교수 열정', '교양 다운', '제대로', '편이', '피드백','다운 교양','열정']].sum(axis=1).tolist()
+    data['neg'] = data[['별로', '부담', '다만', '대충', '빡세', '어려움', '전혀']].sum(axis=1).tolist()
+
+    data['text_score'] = (data['pos'])/(data['neg']+data['pos'])
+
+    eval_final = data[['pos','neg','text_score']]
+    eval_final['index'] = ex_index
+    eval_final.set_index('index',inplace=True)
+
+    total_final = pd.merge(total.iloc[:,[0,1,2,3,4,5,6,7,8,9,10,11,12,13,212,213]],eval_final,left_index=True,right_index=True,how='left')
+
+
+    # 강의별점 결측값 평균으로 채움
+    tem = []
+    for i in total_final['rate']:
+        if i != 0.00:
+            tem.append(i)
+        else:
+            tem.append(3.9)
+
+    total_final['rate'] = tem
+    total_final.fillna(total_final['text_score'].mean(),inplace=True)
+
+    return total_final

@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from preprocess import preprocess
 
 
 
@@ -87,5 +88,9 @@ res_dict = {
 """
 
 if __name__ == '__main__':
-    total_final = pd.read_csv("total_final_2.csv")
+    
+    course_pth = './data/'
+    embed_pretrained_pth = './ckpt/fasttext_model.bin' # Download at https://fasttext.cc/docs/en/crawl-vectors.html
+
+    total_final = preprocess(course_pth,embed_pretrained_pth)
     out = main(total_final,20,0,True,False,True,[1,3],["MON","WED","TUE","THU"],[1,4,1,4],[3,10,3,10])
