@@ -4,14 +4,11 @@
 
 ## AI
 1. 에브리타임, 종합강의정보에서 강의 정보(시간/별점/강의평 등) 크롤링
-2. 전처리 
+2. 전처리  
 3. 알고리즘 모델링  
     - Filter: 1교시, 이러닝 등 필터링 가능한 변수.
     - Score: 정량 지표인 강의평을 키워드 분석하여, 별점 등과 사용자 응답에 따른 가중합 score 사용.
     - 구체적인 알고리즘 디자인은 [개발일지](https://www.notion.so/a54bbfa19664418893fea5c443883382) 참고.
-4. 사용자 응답을 파라미터로 main 함수 실행  
-        
-        !python main.py    
 
 
 ## Backend
@@ -23,4 +20,10 @@
 ## Frontend
 
 (WIP)
+
+## Run
+- 강의정보 csv 형태로 저장 후 'data/' 저장
+- pretrained fasttext_model.bin [다운로드](https://fasttext.cc/docs/en/crawl-vectors.html) 후 'ckpt/' 저장  
+
+        !python main.py --course_pth ./data --pretrain_pth ./ckpt 
 
