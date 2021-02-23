@@ -2,7 +2,7 @@
 
 챗봇 기반 강의 추천 시스템
 
-## Backend
+## AI
 1. 에브리타임, 종합강의정보에서 강의 정보(시간/별점/강의평 등) 크롤링
 2. 전처리 
 3. 알고리즘 모델링  
@@ -12,6 +12,13 @@
 4. 사용자 응답을 파라미터로 main 함수 실행  
         
         !python main.py    
+
+
+## Backend
+1. Flask WSGI Web server 구성
+2. gunicorn worker 기반 다중 처리 
+3. Docker Base Image - python:3.7-slim
+4. Google Cloud sdk - Cloud build (도커 빌드), Cloud Run (배포)
 
 ## Frontend
 
