@@ -17,18 +17,22 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from collections import defaultdict
 
 
-def preprecess(course_pth,embed_pretrained_pth):
+def preprecess(args):
     """
     raw data를 입력받아 최종 main 함수 들어가기전까지 데이터프레임 return
 
-    course_pth: data/
-    embed_pretrained_pth: fasttext pretrained model_kor
+    course_pth: 강의정보 csv 있는 폴더
+    pretrain_pth: fasttext pretrained model_kor
 
     return: input df for main
     """
 
+    course_pth = args.course_pth
+    pretrain_pth = args.pretrain_pth
+
+
     # load data
-    table = course_clustering(os.path.join(course_pth,'심교.csv'),embed_pretrained_pth)
+    table = course_clustering(os.path.join(course_pth,'심교.csv'),pretrain_pth)
     eval = pd.read_csv(os.path.join(course_pth,'강의평.csv'),header=None)
 
     eval.rename(columns={0:'name',1:'prof',2:'hw',3:'team',4:'grade'},inplace=True)
