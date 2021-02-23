@@ -25,7 +25,10 @@ def index():
 	start_list = data['start_lst']
 	end_list = data['end_lst']
 	combinations = algorithm.recommend(credit, quality, no_team, e_learn, no_morning, section, date_list, start_list, end_list)
-	result = {"result": combinations}
+	if not combinations:
+		result = {"result": [], "message": "조건에 해당하는 과목이 없습니다."}
+	else:
+		result = {"result": combinations}
 	return jsonify(result)
 
 

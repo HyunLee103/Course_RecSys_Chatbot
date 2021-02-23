@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
+import os
 
 dataframe = None
+DATA_FILE_NAME = os.environ.get('DATA_FILE_NAME', 'total_final_2.csv')
 
 
 def recommend(credit, quality, no_team, elearn, no_morning, section, date_lst, start_lst, end_lst):
@@ -17,33 +19,26 @@ def recommend(credit, quality, no_team, elearn, no_morning, section, date_lst, s
 	"""
 	global dataframe
 	if dataframe is None:
-		dataframe = pd.read_csv('total_final_2.csv')
+		dataframe = pd.read_csv(DATA_FILE_NAME)
 
 	df = dataframe
 
-	if no_team:
-		df = df[df.no_team == 1]
+	df = df[df.no_team == 1] if no_team else df
+	df = df[df.Elearn == 1] if elearn else df
+	df = df[df.morning == 0] if no_morning else df
+	df = df[df.cluster.isin(section)] if section else df
 
-	if elearn:
-		df = df[df.Elearn == 1]
+	score_list = [
+		0.34 * df.norm_rate + 0.33 * df.text_score + 0.33 * df.grade,
+		0.3 * df.norm_rate + 0.2 * df.text_score + 0.5 * df.grade,
+		0.3 * df.norm_rate + 0.5 * df.text_score + 0.2 * df.grade
+	]
 
-	if no_morning:
-		df = df[df.morning == 0]
-
-	if section:
-		df = df[df.cluster.isin(section)]
-
-	if quality == 1:
-		df['score'] = 0.3 * df.norm_rate + 0.2 * df.text_score + 0.5 * df.grade
-
-	if quality == 2:
-		df['score'] = 0.3 * df.norm_rate + 0.5 * df.text_score + 0.2 * df.grade
-
-	else:
-		df['score'] = 0.34 * df.norm_rate + 0.33 * df.text_score + 0.33 * df.grade
+	quality = quality if quality in [1, 2] else 0
+	df['score'] = score_list[quality]
 
 	if len(df) == 0:
-		print("조건에 해당하는 과목이 없습니다.")
+		return None
 
 	df.reset_index(drop=True, inplace=True)
 
