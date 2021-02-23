@@ -4,7 +4,7 @@ import numpy as np
 import os
 from gensim import models
 from pandas._libs.missing import NA
-from util import mk_cluster_feature, tokenizing
+from util import mk_cluster_feature, tokenizing, course_clustering
 from sklearn.cluster import KMeans 
 import copy
 import matplotlib.pyplot as plt
@@ -12,97 +12,93 @@ import seaborn as sns
 from wordcloud import WordCloud
 
 
-table = pd.read_csv('data/cluster_coures.csv')
-eval = pd.read_csv('data/강의평.csv',header=None)
-
-eval.rename(columns={0:'name',1:'prof',2:'hw',3:'team',4:'grade'},inplace=True)
-
-eval.iloc[:,0:5].team.value_counts()
-
-table.rename(columns={'0':'code','2':'credit','3':'prof','4':'time','5':'online','6':'rate'},inplace=True)
-
-tem = []
-for i in table.time:
-    if i[1:3] == '01':
-        tem.append(1)
-    else:
-        tem.append(0)
-
-table['1교시'] = tem
-
-tem = []
-for i in table.online:
-    if 'e' in i:
-        tem.append(1)
-    else:
-        tem.append(0)
-table['Elearn'] = tem
-
-
-total = pd.merge(table,eval,on=['name','prof'],how='left')
-
-total.drop(columns='Unnamed: 0',inplace=True)
-
-tem = []
-for i in total.team:
-    print(i)
-    if i == '없음':
-        tem.append(0)
-    else:
-        tem.append(1)
-
-total['teampl'] = tem
-
-tem = []
-for i in total.grade:
-    if i == '학점느님':
-        tem.append(1)
-    else:
-        tem.append(0)
-
-total['grade_bi'] = tem
-total['grade_bi'].value_counts()
-
-
-
-total = pd.read_csv('total_1.csv')
-
-eval_text = total.iloc[:,16:-2]
-eval_text
-ex_index = eval_text['7'].dropna().index
-ex_text = eval_text.iloc[ex_index,:]
-
-ex_text.fillna(0,inplace=True)
-
-res = []
-for i in range(95):
-    tem = ''
-    for sen in ex_text.iloc[i,:]:
-        if sen != 0:
-            tem += sen+' '
-    res.append(tem)
-
-
-token = tokenizing(res)
-
-new_token = []
-for sen in token:
-    new_sen = copy.deepcopy(sen)
-    for w in sen:
-        if len(w)==1 and w != '꿀':
-            new_sen.remove(w)
-    new_token.append(new_sen)
-new_token[0]
-
-res = []
-for sen in new_token:
-    tem_str = ''
-    tem_str = ' '.join(sen)
-    res.append(tem_str)
-
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 from collections import defaultdict
+
+
+def preprecess():
+    # load data
+    table = course_clustering('data/심교.csv','fasttext_embed','')
+    # table = pd.read_csv('data/cluster_coures.csv')
+    eval = pd.read_csv('data/강의평.csv',header=None)
+
+    eval.rename(columns={0:'name',1:'prof',2:'hw',3:'team',4:'grade'},inplace=True)
+    table.rename(columns={'0':'code','2':'credit','3':'prof','4':'time','5':'online','6':'rate'},inplace=True)
+
+    # preprocess
+    tem = []
+    for i in table.time:
+        if i[1:3] == '01':
+            tem.append(1)
+        else:
+            tem.append(0)
+
+    table['1교시'] = tem
+
+    tem = []
+    for i in table.online:
+        if 'e' in i:
+            tem.append(1)
+        else:
+            tem.append(0)
+    table['Elearn'] = tem
+
+    total = pd.merge(table,eval,on=['name','prof'],how='left')
+    total.drop(columns='Unnamed: 0',inplace=True)
+
+    tem = []
+    for i in total.team:
+        print(i)
+        if i == '없음':
+            tem.append(0)
+        else:
+            tem.append(1)
+
+    total['teampl'] = tem
+
+    tem = []
+    for i in total.grade:
+        if i == '학점느님':
+            tem.append(1)
+        else:
+            tem.append(0)
+
+    total['grade_bi'] = tem
+
+
+    # 강의평 모델링
+    eval_text = total.iloc[:,15:-2]
+    eval_text
+    ex_index = eval_text.iloc[:,0].dropna().index
+    ex_text = eval_text.iloc[ex_index,:]
+    ex_text.fillna(0,inplace=True)
+
+    res = []
+    for i in range(95):
+        tem = ''
+        for sen in ex_text.iloc[i,:]:
+            if sen != 0:
+                tem += sen+' '
+        res.append(tem)
+
+    token = tokenizing(res)
+
+    new_token = []
+    for sen in token:
+        new_sen = copy.deepcopy(sen)
+        for w in sen:
+            if len(w)==1 and w != '꿀':
+                new_sen.remove(w)
+        new_token.append(new_sen)
+    new_token[0]
+
+    res = []
+    for sen in new_token:
+        tem_str = ''
+        tem_str = ' '.join(sen)
+        res.append(tem_str)
+
+
 
 corpus = res
 vectorizer = TfidfVectorizer(max_features=200,ngram_range=(1,2))

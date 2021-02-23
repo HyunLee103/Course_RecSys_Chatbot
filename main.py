@@ -70,7 +70,7 @@ res_dict = {
 	"id": 0,
 	"timetables": [
 		{
-			"code": 0,
+			"code": 1234,
 			"name": "자료구조",
 			"datetime": [
 				{

@@ -1,5 +1,9 @@
 from collections import Counter
 from konlpy.tag import Okt
+import pandas as pd
+import numpy as np
+from gensim import models
+from sklearn.cluster import KMeans 
 
 def mk_cluster_feature(token):
     """
@@ -35,6 +39,7 @@ def mk_cluster_feature(token):
         clss.append(k)
     return clss
     
+
 def tokenizing(data):
     stopwords = ['의','가','이','은','들','을','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다','에서','되','그','수','나','것','하','있','보','주','아니','등','같','때','년','가','한','지','오','말','일','다','이다']
 
@@ -56,3 +61,59 @@ def tokenizing(data):
         tokens.append(tem)
 
     return tokens
+
+
+def course_clustering(course_pth, embed_pretrained_pth):
+    """
+    course_pth: 기존의 강의 정보 csv
+    embed_pretrained_pth: fasttext pretrained model_kor
+
+    return: cluster labeled csv
+    """
+
+    # load data
+    table = pd.read_csv(course_pth,header=None)
+    unique_course = list(set(table.iloc[:,1].tolist()))
+    len(unique_course)
+
+    # load FastText pretrained model
+    ko_model = models.fasttext.load_facebook_model(embed_pretrained_pth)
+
+
+    # tokenizing
+    token = tokenizing(unique_course)
+    token[4] = ['기술','소통']
+    token[130] = ['문화']
+    token
+
+    # Vectorizing
+    add_feature = mk_cluster_feature(token)
+
+    course_vec = []
+    for sen in token:
+        w_vec = 0
+        for w in sen:
+            w_vec += ko_model.wv.word_vec(w)
+        
+        course_vec.append(w_vec/len(sen))
+
+    vec = np.concatenate((np.array(course_vec), np.array(add_feature).reshape(-1,1)),axis=1)
+
+
+    # Clustering
+    kmeans = KMeans(n_clusters=6,random_state=2020) 
+    kmeans.fit(vec)
+    cluster = kmeans.predict(vec)
+
+
+    # Merge, export
+    cluster_df = pd.DataFrame(unique_course)
+    cluster_df['cluster'] = cluster
+    cluster_df.loc[(cluster_df.cluster==0),'cluster'] = 2
+
+    cluster_df.rename(columns={0:'name'},inplace=True)
+    table.rename(columns={1:'name'},inplace=True)
+
+    res_df = pd.merge(table,cluster_df)
+
+    return res_df
