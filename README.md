@@ -9,6 +9,9 @@
     - Filter: 1교시, 이러닝 등 필터링 가능한 변수.
     - Score: 정량 지표인 강의평을 키워드 분석하여, 별점 등과 사용자 응답에 따른 가중합 score 사용.
     - 구체적인 알고리즘 디자인은 [개발일지](https://www.notion.so/a54bbfa19664418893fea5c443883382) 참고.
+4. 사용자 응답을 파라미터로 main 함수 실행  
+        
+        !python main.py    
 
 ## Frontend
 
