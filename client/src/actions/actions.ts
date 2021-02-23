@@ -1,11 +1,20 @@
-import { chatbot } from '../http';
+import { chatbot, restAPI } from '../http';
 import {
   WELCOME,
   START_SEND_MESSAGE,
   SEND_MESSAGE_SUCCESSFUL,
   SEND_MESSAGE_FAILED,
   WRITE_MESSAGE,
+  START_API_REQUEST,
+  API_REQUEST_SUCCESSFUL,
+  API_REQUEST_FAILED,
+  STATUS_CHANGE,
 } from './actionTypes';
+
+interface StatusChange {
+  type: typeof STATUS_CHANGE;
+  newStatus: string;
+}
 
 interface Welcome {
   type: typeof WELCOME;
@@ -30,12 +39,38 @@ interface SendMessageFailed {
   error: string;
 }
 
+interface StartAPIRequest {
+  type: typeof START_API_REQUEST;
+}
+
+interface APIRequestSuccessful {
+  type: typeof API_REQUEST_SUCCESSFUL;
+  originalData: any;
+  response: any;
+}
+
+interface APIRequestFailed {
+  type: typeof API_REQUEST_FAILED;
+  error: string;
+}
+
 export type AppActions =
+  | StatusChange
   | Welcome
   | WriteMessage
   | StartSendMessage
   | SendMessageSuccessful
-  | SendMessageFailed;
+  | SendMessageFailed
+  | StartAPIRequest
+  | APIRequestSuccessful
+  | APIRequestFailed;
+
+export function statusChange(newStatus: string): StatusChange {
+  return {
+    type: STATUS_CHANGE,
+    newStatus,
+  };
+}
 
 function welcome(): Welcome {
   return {
@@ -93,6 +128,40 @@ export function sendMessage(chatInfo: object) {
       return dispatch(sendMessageSuccessful(responseData));
     } catch (error) {
       return dispatch(sendMessageFailed(error));
+    }
+  };
+}
+
+function startAPIRequest(): StartAPIRequest {
+  return { type: START_API_REQUEST };
+}
+
+export function apiRequestSuccessful(
+  originalData: object,
+  response: object
+): APIRequestSuccessful {
+  return {
+    type: API_REQUEST_SUCCESSFUL,
+    originalData,
+    response,
+  };
+}
+
+function apiRequsetFailed(error: string): APIRequestFailed {
+  return {
+    type: API_REQUEST_FAILED,
+    error,
+  };
+}
+
+export function apiRequest(originalData: object, requestBody: object) {
+  return async (dispatch: any) => {
+    dispatch(startAPIRequest());
+    try {
+      const response = await restAPI.post('/', requestBody);
+      return dispatch(apiRequestSuccessful(originalData, response.data.result));
+    } catch (error) {
+      return dispatch(apiRequsetFailed(error));
     }
   };
 }

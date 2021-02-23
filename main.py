@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-
+from preprocess import preprocess
+import argparse
 
 
 def main(df,credit, quality, no_team, elearn, no_morning, section,date_lst,start_lst,end_lst):
@@ -63,6 +64,23 @@ def main(df,credit, quality, no_team, elearn, no_morning, section,date_lst,start
     return df
 
 
+parser = argparse.ArgumentParser(description="Course_RecSys",
+                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        
+parser.add_argument("--course_pth", default="./data/", type=str, dest="course_pth")
+parser.add_argument("--pretrain_pth", default="./ckpt/fasttext_model.bin", type=str, dest="pretrain_pth")
+
+args = parser.parse_args()
+
+
+if __name__ == '__main__':
+    
+    total_final = preprocess(args)
+    out = main(total_final,20,0,True,False,True,[1,3],["MON","WED","TUE","THU"],[1,4,1,4],[3,10,3,10])
+
+
+
+
 """
 return 형식
 
@@ -70,7 +88,7 @@ res_dict = {
 	"id": 0,
 	"timetables": [
 		{
-			"code": 0,
+			"code": 1234,
 			"name": "자료구조",
 			"datetime": [
 				{
@@ -85,7 +103,3 @@ res_dict = {
     "score" : 0
 }
 """
-
-if __name__ == '__main__':
-    total_final = pd.read_csv("total_final_2.csv")
-    out = main(total_final,20,0,True,False,True,[1,3],["MON","WED","TUE","THU"],[1,4,1,4],[3,10,3,10])

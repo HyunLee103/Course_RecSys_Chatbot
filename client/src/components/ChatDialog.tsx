@@ -1,19 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Button, Card } from 'antd';
+import { Card } from 'antd';
+import UserSelectDialog from './UserSelectDialog';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../reducers';
-import { sendMessage, writeMessage } from '../actions/actions';
+import { statusChange } from '../actions/actions';
 
 interface ChatDialogStyleProps {
   me: boolean;
 }
 
-// FIXME any 고치기
+export interface SelectionOptionList {
+  label: string;
+  value: number;
+}
+
+interface Selection {
+  optionList: SelectionOptionList[];
+}
+
 interface ChatDialogProps {
   me: boolean;
   text: string;
-  selection?: any[];
+  selection: Selection[];
 }
 
 const ChatDialogWrapper = styled.div`
@@ -41,22 +50,18 @@ const Text = styled.p<ChatDialogStyleProps>`
 
 const ChatDialog = ({ me, text, selection }: ChatDialogProps) => {
   const dispatch = useDispatch();
-  const chatInfo = useSelector(
-    ({ ins_id, intent_id, param_id, user_id }: AppState) => ({
-      ins_id,
-      intent_id,
-      param_id,
-      user_id,
-    })
-  );
+  const status = useSelector((state: AppState) => state.status);
+  const messages = useSelector((state: AppState) => state.messages);
 
   const buttons =
-    selection && selection.length > 0 ? selection[0].optionList : undefined;
+    selection && selection.length > 0 ? selection[0].optionList : [];
 
-  const handleClick = (value: number, label: string) => (event: any) => {
-    dispatch(writeMessage(label));
-    dispatch(sendMessage({ ...chatInfo, input_sentence: value }));
-  };
+  useEffect(() => {
+    const lastMessageText = messages[messages.length - 1].message;
+    if (lastMessageText.slice(-1) === ')' && status !== 'TIMETABLE_REQUESTED') {
+      dispatch(statusChange('TIMETABLE_REQUESTED'));
+    }
+  }, [messages, status, dispatch]);
 
   if (!text) {
     return <React.Fragment />;
@@ -66,23 +71,8 @@ const ChatDialog = ({ me, text, selection }: ChatDialogProps) => {
     <ChatDialogWrapper>
       <ChatDialogContainer me={me}>
         <Textbox me={me} size="small">
-          <Text me={me} style={{ margin: 0 }}>
-            {text}
-          </Text>
-          {buttons ? (
-            buttons.map(({ value, label }: any) => (
-              <Button
-                style={{ margin: '2px' }}
-                type="default"
-                block
-                onClick={handleClick(value, label)}
-              >
-                {label}
-              </Button>
-            ))
-          ) : (
-            <React.Fragment />
-          )}
+          <Text me={me}>{text}</Text>
+          <UserSelectDialog buttons={buttons} />
         </Textbox>
       </ChatDialogContainer>
     </ChatDialogWrapper>

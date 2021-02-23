@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
-import { Input } from 'antd';
+import { Col, Input, Row } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { sendMessage, writeMessage } from '../actions/actions';
-import { AppState } from '../reducers';
 import styled from 'styled-components';
+import { sendMessage, statusChange, writeMessage } from '../actions/actions';
+import { AppState } from '../reducers';
+import { desktopWidth, mobileWidth } from './Layout';
 
-const ChatInput = styled(Input.Search)`
-  margin: 0 10px;
-  border-radius: 8px;
+interface ChatFormProps {
+  show: boolean;
+}
+
+const ChatFormWrapper = styled(Row)<ChatFormProps>`
+  display: ${props => (props.show ? 'flex' : 'none')};
 `;
 
-const ChatForm: React.FC = () => {
-  const [value, setValue] = useState('');
+const { Search } = Input;
+
+const ChatForm = ({ show }: ChatFormProps) => {
+  const [value, setValue] = useState<string>('');
 
   const dispatch = useDispatch();
   const chatInfo = useSelector(
@@ -23,26 +29,31 @@ const ChatForm: React.FC = () => {
     })
   );
 
-  const handleChange = (event: any) => {
+  const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     setValue(event.currentTarget.value);
   };
 
   const handleSubmit = () => {
     dispatch(writeMessage(value));
     dispatch(sendMessage({ ...chatInfo, input_sentence: value }));
+    dispatch(statusChange('START_CONVERSATION'));
     setValue('');
   };
 
   return (
-    <Input.Search
-      placeholder="답변을 입력하세요"
-      allowClear
-      enterButton="보내기!"
-      size="large"
-      onSearch={handleSubmit}
-      onChange={handleChange}
-      value={value}
-    />
+    <ChatFormWrapper show={show}>
+      <Col md={desktopWidth} sm={mobileWidth} xs={mobileWidth}>
+        <Search
+          placeholder="답변을 입력하세요"
+          allowClear
+          enterButton="보내기!"
+          size="large"
+          onSearch={handleSubmit}
+          onChange={handleChange}
+          value={value}
+        />
+      </Col>
+    </ChatFormWrapper>
   );
 };
 
